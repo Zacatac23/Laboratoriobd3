@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Estudiante - Sistema Académico UVG</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-graduation-cap"></i> Sistema Académico UVG
+            </a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="/">Dashboard</a>
+                <a class="nav-link" href="/estudiantes">Estudiantes</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1><i class="fas fa-user-graduate"></i> <%= estudiante.nombres %> <%= estudiante.apellidos %></h1>
+            <div>
+                <a href="/estudiantes/<%= estudiante.id %>/editar" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+                <a href="/estudiantes" class="btn btn-secondary">
+                    <i class="fas fa-list"></i> Volver a Lista
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Información del estudiante -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-user"></i> Información Personal</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><strong>Carné:</strong></td>
+                                <td><%= estudiante.carne %></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Nombre:</strong></td>
+                                <td><%= estudiante.nombres %> <%= estudiante.apellidos %></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Email:</strong></td>
+                                <td><%= estudiante.email %></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Teléfono:</strong></td>
+                                <td><%= estudiante.telefono || 'No registrado' %></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fecha de Nacimiento:</strong></td>
+                                <td><%= new Date(estudiante.fechaNacimiento).toLocaleDateString('es-GT') %></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Estado:</strong></td>
+                                <td>
+                                    <span class="badge bg-<%= estudiante.estado === 'ACTIVO' ? 'success' : 
+                                                                estudiante.estado === 'GRADUADO' ? 'primary' : 
+                                                                estudiante.estado === 'SUSPENDIDO' ? 'danger' : 'secondary' %>">
+                                        <%= estudiante.estado %>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Promedio:</strong></td>
+                                <td>
+                                    <% if (estudiante.promedio) { %>
+                                        <span class="badge bg-<%= estudiante.promedio >= 80 ? 'success' : 
+                                                                    estudiante.promedio >= 70 ? 'warning' : 'danger' %>">
+                                            <%= parseFloat(estudiante.promedio).toFixed(2) %>
+                                        </span>
+                                    <% } else { %>
+                                        <span class="text-muted">No calculado</span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inscri

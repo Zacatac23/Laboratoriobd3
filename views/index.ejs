@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema Académico UVG</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-graduation-cap"></i> Sistema Académico UVG
+            </a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="/">Dashboard</a>
+                <a class="nav-link" href="/estudiantes">Estudiantes</a>
+                <a class="nav-link" href="/materias">Materias</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container mt-4">
+        <h1>Dashboard - Sistema Académico</h1>
+        
+        <!-- Estadísticas -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-users"></i> Estudiantes</h5>
+                        <h2><%= estadisticas.length %></h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-clipboard-list"></i> Inscripciones</h5>
+                        <h2><%= inscripciones.length %></h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-database"></i> Base de Datos</h5>
+                        <h2>PostgreSQL</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acciones rápidas -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-bolt"></i> Acciones Rápidas</h5>
+            </div>
+            <div class="card-body">
+                <a href="/estudiantes/nuevo" class="btn btn-primary me-2">
+                    <i class="fas fa-plus"></i> Nuevo Estudiante
+                </a>
+                <a href="/estudiantes" class="btn btn-success me-2">
+                    <i class="fas fa-list"></i> Ver Estudiantes
+                </a>
+                <a href="/materias" class="btn btn-info">
+                    <i class="fas fa-book"></i> Ver Materias
+                </a>
+            </div>
+        </div>
+
+        <!-- Tabla de inscripciones usando la VISTA -->
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-bar"></i> Inscripciones Actuales (Vista Combinada)</h5>
+                <small class="text-muted">Datos obtenidos usando VIEW de PostgreSQL</small>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Carné</th>
+                                <th>Estudiante</th>
+                                <th>Código</th>
+                                <th>Materia</th>
+                                <th>Créditos</th>
+                                <th>Tipo</th>
+                                <th>Calificación</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% inscripciones.forEach(function(i) { %>
+                            <tr>
+                                <td><strong><%= i.carne %></strong></td>
+                                <td><%= i.nombre_completo %></td>
+                                <td><strong><%= i.codigo_materia %></strong></td>
+                                <td><%= i.nombre_materia %></td>
+                                <td><span class="badge bg-secondary"><%= i.creditos %></span></td>
+                                <td>
+                                    <span class="badge bg-<%= i.tipo_materia === 'OBLIGATORIA' ? 'primary' : 'success' %>">
+                                        <%= i.tipo_materia %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <% if (i.calificacion) { %>
+                                        <span class="badge bg-<%= i.calificacion >= 61 ? 'success' : 'danger' %>">
+                                            <%= parseFloat(i.calificacion).toFixed(2) %>
+                                        </span>
+                                    <% } else { %>
+                                        <span class="text-muted">Pendiente</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <span class="badge bg-<%= i.estado_inscripcion === 'APROBADO' ? 'success' : 
+                                                                i.estado_inscripcion === 'CURSANDO' ? 'warning' : 'primary' %>">
+                                        <%= i.estado_inscripcion %>
+                                    </span>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas por estudiante -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-line"></i> Estadísticas por Estudiante</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Carné</th>
+                                <th>Nombre</th>
+                                <th>Estado</th>
+                                <th>Materias</th>
+                                <th>Aprobadas</th>
+                                <th>Créditos</th>
+                                <th>Promedio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% estadisticas.forEach(function(e) { %>
+                            <tr>
+                                <td><strong><%= e.carne %></strong></td>
+                                <td><%= e.nombre_completo %></td>
+                                <td>
+                                    <span class="badge bg-<%= e.estado === 'ACTIVO' ? 'success' : 'secondary' %>">
+                                        <%= e.estado %>
+                                    </span>
+                                </td>
+                                <td><%= e.total_materias_inscritas || 0 %></td>
+                                <td><%= e.materias_aprobadas || 0 %></td>
+                                <td><%= e.creditos_aprobados || 0 %></td>
+                                <td>
+                                    <% if (e.promedio_calculado) { %>
+                                        <span class="badge bg-<%= e.promedio_calculado >= 80 ? 'success' : 
+                                                                    e.promedio_calculado >= 70 ? 'warning' : 'danger' %>">
+                                            <%= parseFloat(e.promedio_calculado).toFixed(2) %>
+                                        </span>
+                                    <% } else { %>
+                                        <span class="text-muted">N/A</span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-5 text-center text-muted">
+            <p><i class="fas fa-graduation-cap"></i> Universidad del Valle de Guatemala | CC3088 - Bases de Datos I</p>
+            <p>Laboratorio 3 - Sistema implementado con PostgreSQL + Sequelize ORM</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
